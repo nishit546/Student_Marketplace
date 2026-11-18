@@ -125,7 +125,7 @@ export function SellProductForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -156,7 +156,7 @@ export function SellProductForm({
         },
       };
 
-      updateProduct(pId, updatedData);
+      await updateProduct(pId, updatedData);
       setIsSubmitting(false);
 
       if (onSuccess) {
@@ -166,7 +166,7 @@ export function SellProductForm({
       }
     } else {
       // New Listing
-      const newProduct = addProduct({
+      const newProduct = await addProduct({
         name: name.trim(),
         description: description.trim(),
         price: calculatedPrice,
@@ -194,7 +194,7 @@ export function SellProductForm({
       } else {
         // Smooth redirect to newly created product
         setTimeout(() => {
-          router.push(`/product/${newProduct.id}`);
+          router.push(`/product/${newProduct.id || newProduct._id}`);
         }, 1200);
       }
     }

@@ -49,18 +49,30 @@
 - **Edit Listing**: modify product title, description, category, condition, price, and location.
 - **Mark as Sold / Relist**: toggle status between Available and Sold.
 - **Delete Listing**: permanent deletion with safety confirmation modal.
-- Client-side `localStorage` persistence across all pages and refreshes.
+
+### 6. MongoDB Database & Next.js API Routes (Phase 4)
+- **MongoDB Connection Pool**: Cached connection handling in `lib/mongodb.ts` optimized for Next.js App Router hot-reloading.
+- **Mongoose Schema & Models**: Fully typed `Product` model in `models/Product.ts` with schema validations, text indexes, timestamps, and virtual ID mapping.
+- **RESTful API Route Handlers**:
+  - `GET /api/products`: Full filtering (search, category, condition, type, price range, seller email, sorting) and auto-seeding on fresh databases.
+  - `POST /api/products`: Server-side input validation and persistent document creation.
+  - `GET /api/products/[id]`: Single product retrieval supporting both MongoDB `ObjectId` and fallback string identifiers.
+  - `PUT /api/products/[id]`: Partial product updates with validation.
+  - `DELETE /api/products/[id]`: Permanent listing removal.
+  - `POST /api/products/migrate`: Automatic one-time migration endpoint from Phase 3 `localStorage` data into MongoDB.
+- **Resilient Fallback**: Optimistic client updates with offline/local fallback so the app continues to operate seamlessly even before database setup.
 
 ---
 
 ## 🛠️ Technology Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router, React 19)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict TS/TSX throughout)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Components**: [shadcn/ui](https://ui.shadcn.com/) design system & primitives
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **State & Storage**: React Context + Browser `localStorage` (Phase 1–3)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **State & Sync**: React Context + Next.js Route Handlers + Resilient Fallback
 
 ---
 
@@ -68,23 +80,30 @@
 
 ```text
 ├── app/
-│   ├── layout.tsx              # Root layout with Navbar, Footer & ProductsProvider
-│   ├── page.tsx                # Homepage
-│   ├── globals.css             # Tailwind 4 theme & color tokens
+│   ├── api/
+│   │   └── products/
+│   │       ├── route.ts          # GET (list & auto-seed) & POST (create)
+│   │       ├── [id]/
+│   │       │   └── route.ts      # GET, PUT, DELETE by product ID
+│   │       └── migrate/
+│   │           └── route.ts      # One-time migration endpoint
+│   ├── layout.tsx                # Root layout with Navbar, Footer & ProductsProvider
+│   ├── page.tsx                  # Homepage
+│   ├── globals.css               # Tailwind 4 theme & color tokens
 │   ├── explore/
-│   │   └── page.tsx            # Explore Marketplace
+│   │   └── page.tsx              # Explore Marketplace
 │   ├── product/
 │   │   └── [id]/
-│   │       ├── page.tsx        # Dynamic Product Details page
-│   │       └── not-found.tsx   # Custom 404 page
+│   │       ├── page.tsx          # Dynamic Product Details page
+│   │       └── not-found.tsx     # Custom 404 page
 │   ├── sell/
-│   │   └── page.tsx            # Create Listing page
+│   │   └── page.tsx              # Create Listing page
 │   └── my-listings/
-│       └── page.tsx            # Seller Management dashboard
+│       └── page.tsx              # Seller Management dashboard
 ├── components/
 │   ├── layout/
-│   │   ├── Navbar.tsx          # Responsive navigation bar
-│   │   └── Footer.tsx          # Campus trust badges & quick links
+│   │   ├── Navbar.tsx            # Responsive navigation bar
+│   │   └── Footer.tsx            # Campus trust badges & quick links
 │   ├── home/
 │   │   ├── HeroSection.tsx
 │   │   ├── CategorySection.tsx
@@ -120,12 +139,15 @@
 │       ├── input.tsx
 │       └── card.tsx
 ├── context/
-│   └── ProductsContext.tsx     # Centralized product state & CRUD
+│   └── ProductsContext.tsx       # Live MongoDB sync & CRUD state
 ├── lib/
-│   ├── sample-data.ts          # Default campus product catalog
-│   └── utils.ts                # Formatting & cn helpers
+│   ├── mongodb.ts                # Cached Mongoose connection handler
+│   ├── sample-data.ts            # Default campus product catalog
+│   └── utils.ts                  # Formatting & cn helpers
+├── models/
+│   └── Product.ts                # Mongoose Product Schema & validation
 └── types/
-    └── index.ts                # TypeScript interfaces
+    └── index.ts                  # Strict TypeScript interfaces
 ```
 
 ---
@@ -143,14 +165,27 @@ cd Student_Marketplace
 npm install
 ```
 
-### 3. Run development server
+### 3. Configure MongoDB Environment Variables
+Create a `.env.local` file in the root directory (based on `.env.example`):
+
+```bash
+# Using MongoDB Atlas
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/campuskart?retryWrites=true&w=majority
+
+# Or using Local MongoDB
+MONGODB_URI=mongodb://localhost:27017/campuskart
+```
+
+> **Note**: `.env.local` is included in `.gitignore` and is never committed to GitHub.
+
+### 4. Run development server
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to view the application.
 
-### 4. Build for Production
+### 5. Build for Production
 ```bash
 npm run build
 npm run start
