@@ -97,6 +97,18 @@ export interface ApiResponse<T = unknown> {
   message?: string;
 }
 
+export interface DashboardStats {
+  totalListings: number;
+  activeListings: number;
+  soldListings: number;
+  pendingEnquiries: number;
+  pendingOffers: number;
+  totalActiveValue: number;
+  recentListings: Product[];
+  recentEnquiries: Enquiry[];
+  recentOffers: Offer[];
+}
+
 export interface FilterState {
   search: string;
   category: string;
