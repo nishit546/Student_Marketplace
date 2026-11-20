@@ -7,6 +7,7 @@ import { Heart, MapPin, ArrowRight, User } from "lucide-react";
 import { Product } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
+import { useFavorites } from "@/context/FavoritesContext";
 
 interface ProductCardProps {
   product: Product;
@@ -16,18 +17,18 @@ interface ProductCardProps {
 
 export function ProductCard({
   product,
-  isSaved = false,
   onToggleSave,
 }: ProductCardProps) {
-  const [saved, setSaved] = React.useState(isSaved);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [imageLoaded, setImageLoaded] = React.useState(false);
 
   const productId = product.id || product._id || "";
+  const saved = isFavorite(productId);
 
-  const handleHeartClick = (e: React.MouseEvent) => {
+  const handleHeartClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSaved(!saved);
+    const nextSaved = await toggleFavorite(productId);
     if (onToggleSave) {
       onToggleSave(productId);
     }

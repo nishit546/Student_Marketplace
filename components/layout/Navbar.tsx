@@ -15,10 +15,12 @@ import {
   Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useFavorites } from "@/context/FavoritesContext";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const pathname = usePathname();
+  const { favoritesCount } = useFavorites();
 
   // Close mobile menu on route change
   React.useEffect(() => {
@@ -79,10 +81,15 @@ export function Navbar() {
           {/* Favorites Link */}
           <Link
             href="/favorites"
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
+            className="relative flex h-10 w-10 items-center justify-center rounded-xl text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
             title="Saved Items"
           >
             <Heart className="h-5 w-5" />
+            {favoritesCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm">
+                {favoritesCount}
+              </span>
+            )}
           </Link>
 
           {/* Dashboard Link */}
@@ -157,10 +164,17 @@ export function Navbar() {
             </Link>
             <Link
               href="/favorites"
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium text-neutral-700 hover:bg-neutral-100"
+              className="flex items-center justify-between rounded-lg px-3 py-2.5 text-base font-medium text-neutral-700 hover:bg-neutral-100"
             >
-              <Heart className="h-5 w-5 text-rose-500" />
-              <span>Saved Items</span>
+              <div className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-rose-500" />
+                <span>Saved Items</span>
+              </div>
+              {favoritesCount > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-xs font-bold text-white">
+                  {favoritesCount}
+                </span>
+              )}
             </Link>
             <Link
               href="/dashboard"

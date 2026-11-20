@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFavorites } from "@/context/FavoritesContext";
 
 interface FavoriteButtonProps {
   productId: string;
@@ -15,19 +16,21 @@ interface FavoriteButtonProps {
 
 export function FavoriteButton({
   productId,
-  initialSaved = false,
   onToggle,
   showLabel = false,
   size = "default",
   className,
 }: FavoriteButtonProps) {
-  const [saved, setSaved] = React.useState(initialSaved);
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const saved = isFavorite(productId);
+  const [isAnimating, setIsAnimating] = React.useState(false);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const nextSaved = !saved;
-    setSaved(nextSaved);
+    setIsAnimating(true);
+    const nextSaved = await toggleFavorite(productId);
+    setTimeout(() => setIsAnimating(false), 300);
     if (onToggle) {
       onToggle(nextSaved);
     }
@@ -44,7 +47,7 @@ export function FavoriteButton({
       onClick={handleClick}
       type="button"
       className={cn(
-        "inline-flex items-center justify-center rounded-xl border font-semibold transition-all duration-200 active:scale-95",
+        "inline-flex items-center justify-center rounded-xl border font-semibold transition-all duration-200 active:scale-95 cursor-pointer",
         saved
           ? "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
           : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300",
@@ -58,7 +61,10 @@ export function FavoriteButton({
         className={cn(
           "transition-all duration-200",
           size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-5 w-5" : "h-4 w-4",
-          saved ? "fill-current text-rose-500 scale-110" : "text-neutral-500"
+          saved
+            ? "fill-current text-rose-500 scale-110"
+            : "text-neutral-500",
+          isAnimating && "scale-125"
         )}
       />
       {showLabel && (
@@ -67,4 +73,3 @@ export function FavoriteButton({
     </button>
   );
 }
-

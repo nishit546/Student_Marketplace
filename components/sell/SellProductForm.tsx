@@ -11,7 +11,7 @@ import {
   Building,
 } from "lucide-react";
 import { useProducts, DEMO_USER } from "@/context/ProductsContext";
-import { Product } from "@/types";
+import { Product, ListingType } from "@/types";
 import { FormField } from "@/components/sell/FormField";
 import { ImageUploader } from "@/components/sell/ImageUploader";
 import { Button } from "@/components/ui/button";
@@ -57,7 +57,7 @@ export function SellProductForm({
   const [condition, setCondition] = React.useState(
     initialProduct?.condition || "Good"
   );
-  const [listingType, setListingType] = React.useState(
+  const [listingType, setListingType] = React.useState<ListingType>(
     initialProduct?.listingType || "For Sale"
   );
   const [images, setImages] = React.useState<string[]>(
@@ -345,7 +345,7 @@ export function SellProductForm({
               <select
                 value={listingType}
                 onChange={(e) => {
-                  setListingType(e.target.value);
+                  setListingType(e.target.value as ListingType);
                   if (e.target.value === "Free") {
                     setPrice("0");
                   }

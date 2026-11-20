@@ -212,7 +212,7 @@ export function ProductDetailsView({
 
                 {/* Secondary Row: Make an Offer + Favorite */}
                 <div className="flex items-center gap-2.5">
-                  {!isFree && (
+                  {product.listingType === "For Sale" && (
                     <Button
                       onClick={() => setOfferModalOpen(true)}
                       disabled={isSold}
@@ -221,7 +221,7 @@ export function ProductDetailsView({
                       className="flex-1 justify-center gap-2 rounded-xl border-neutral-300 font-semibold text-neutral-800 hover:border-[#ff4000] hover:text-[#ff4000]"
                     >
                       <Tag className="h-4 w-4" />
-                      <span>Make an Offer</span>
+                      <span>{isSold ? "Offer Closed" : "Make an Offer"}</span>
                     </Button>
                   )}
 
@@ -229,7 +229,11 @@ export function ProductDetailsView({
                     productId={productId}
                     showLabel
                     size="lg"
-                    className={isFree ? "w-full justify-center" : "flex-1 justify-center"}
+                    className={
+                      product.listingType !== "For Sale"
+                        ? "w-full justify-center"
+                        : "flex-1 justify-center"
+                    }
                   />
                 </div>
               </div>

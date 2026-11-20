@@ -33,7 +33,7 @@ export interface Product {
   price: number;
   category: string;
   condition: string;
-  listingType: string;
+  listingType: ListingType;
   images: string[];
   seller: SellerInfo;
   status: ProductStatus;
@@ -60,8 +60,9 @@ export interface Enquiry {
   buyerName: string;
   buyerEmail: string;
   message: string;
-  status: "pending" | "replied" | "closed";
+  status: "Pending" | "Responded" | "Closed" | "pending" | "replied" | "closed";
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Offer {
@@ -74,17 +75,19 @@ export interface Offer {
   buyerEmail: string;
   offeredPrice: number;
   message?: string;
-  status: "pending" | "accepted" | "rejected";
+  status: "Pending" | "Accepted" | "Rejected" | "pending" | "accepted" | "rejected";
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Favorite {
   _id?: string;
   id?: string;
   userId: string;
-  productId: string;
+  productId: string | Product;
   product?: Product;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ApiResponse<T = unknown> {
