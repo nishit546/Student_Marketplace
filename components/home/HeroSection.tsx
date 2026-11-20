@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Search, Sparkles, ArrowRight, ShieldCheck, Zap, Users } from "lucide-react";
+import { Search, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function HeroSection() {

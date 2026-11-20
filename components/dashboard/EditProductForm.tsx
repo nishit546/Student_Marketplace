@@ -13,7 +13,6 @@ interface EditProductFormProps {
 export function EditProductForm({
   product,
   onSuccess,
-  onCancel,
 }: EditProductFormProps) {
   return (
     <div className="w-full">

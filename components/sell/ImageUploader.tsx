@@ -3,7 +3,6 @@
 import * as React from "react";
 import Image from "next/image";
 import { UploadCloud, X, Plus, Sparkles, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface ImageUploaderProps {
   images: string[];

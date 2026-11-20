@@ -28,7 +28,7 @@ export function ProductCard({
   const handleHeartClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const nextSaved = await toggleFavorite(productId);
+    await toggleFavorite(productId);
     if (onToggleSave) {
       onToggleSave(productId);
     }

@@ -12,12 +12,9 @@ import {
   IndianRupee,
   PlusCircle,
   ArrowRight,
-  Eye,
-  Clock,
   Loader2,
   AlertCircle,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice, formatTimeAgo } from "@/lib/utils";
 import { DashboardStats, Product, Enquiry, Offer } from "@/types";

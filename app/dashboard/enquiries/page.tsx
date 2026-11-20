@@ -4,17 +4,13 @@ import * as React from "react";
 import Link from "next/link";
 import {
   MessageSquare,
-  Mail,
   Eye,
-  Clock,
   CheckCircle2,
   XCircle,
   Loader2,
   AlertCircle,
-  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { formatTimeAgo } from "@/lib/utils";
 import { Enquiry, Product } from "@/types";
 

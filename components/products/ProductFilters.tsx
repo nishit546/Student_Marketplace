@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Filter, RotateCcw, X, SlidersHorizontal } from "lucide-react";
+import { RotateCcw, X, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface FilterState {

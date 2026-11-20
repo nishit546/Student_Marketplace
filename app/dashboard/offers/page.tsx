@@ -10,7 +10,6 @@ import {
   Loader2,
   AlertCircle,
   AlertTriangle,
-  IndianRupee,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice, formatTimeAgo } from "@/lib/utils";

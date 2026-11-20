@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Trash2, ArrowRight, Sparkles, Tag, ShieldCheck } from "lucide-react";
+import { Heart, Trash2, ArrowRight, ShieldCheck } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesContext";
 import { useProducts } from "@/context/ProductsContext";
 import { EmptyFavorites } from "@/components/favorites/EmptyFavorites";

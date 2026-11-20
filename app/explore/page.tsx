@@ -139,7 +139,7 @@ function ExploreContent() {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
     });
-  }, [search, filters, sort]);
+  }, [products, search, filters, sort]);
 
   const activeFiltersCount =
     (filters.category && filters.category !== "All" ? 1 : 0) +
