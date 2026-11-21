@@ -268,19 +268,84 @@ npm run build
 
 ---
 
-## 🌐 Deployment Information (Vercel)
+## 🌐 MongoDB Atlas Setup
 
-1. Push all code to your GitHub repository:
-   ```bash
-   git push origin main
+To connect CampusKart to a cloud database for production:
+
+### 1. Create a MongoDB Atlas Cluster
+1. Sign in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+2. Create a new organization / project (e.g. `CampusKart`).
+3. Click **Create Deployment** and select the **M0 Free Tier** cluster in your preferred region.
+
+### 2. Create a Database User
+1. In the Atlas left navigation, go to **Security** → **Database Access**.
+2. Click **Add New Database User**.
+3. Choose **Password** authentication method:
+   - **Username**: `campuskart_admin` (or your choice)
+   - **Password**: Enter a secure password (avoid special characters like `@`, `:`, `/` or URL-encode them).
+4. Under **Database User Privileges**, select **Read and write to any database**.
+5. Click **Add User**.
+
+### 3. Configure Network Access (Crucial for Vercel)
+Vercel serverless functions use dynamic IP addresses across AWS regions. To allow Vercel to connect:
+1. In the Atlas left navigation, go to **Security** → **Network Access**.
+2. Click **Add IP Address**.
+3. Select **Allow Access from Anywhere** (`0.0.0.0/0`).
+4. Click **Confirm**. *(Status will transition from "Pending" to "Active")*.
+
+### 4. Obtain the Connection String
+1. Go to **Deployments** → **Database** → click **Connect** next to your cluster.
+2. Choose **Drivers** (Node.js, version 5.5 or later).
+3. Copy the SRV connection string:
    ```
-2. Log in to [Vercel](https://vercel.com/) and click **Add New Project**.
-3. Import the `Student_Marketplace` repository.
-4. Under **Environment Variables**, add:
-   - `MONGODB_URI`: Your MongoDB Atlas connection string.
-5. In **MongoDB Atlas**:
-   - Go to **Network Access** → Click **Add IP Address** → Choose **Allow Access from Anywhere** (`0.0.0.0/0`) so Vercel serverless functions can connect.
-6. Click **Deploy**. Vercel will build and assign a live production URL.
+   mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
+   ```
+4. Replace `<username>` and `<password>` with your database user credentials.
+5. Append `/campuskart` before `?retryWrites` to target the `campuskart` database:
+   ```
+   mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/campuskart?retryWrites=true&w=majority
+   ```
+
+---
+
+## 🚀 Vercel Deployment Guide
+
+Follow these steps to deploy CampusKart publicly:
+
+### 1. Push All Code to GitHub
+Ensure all latest code and production fixes are committed and pushed:
+```bash
+git add .
+git commit -m "Prepare CampusKart for deployment"
+git push origin main
+```
+
+### 2. Import Repository into Vercel
+1. Navigate to [Vercel](https://vercel.com/) and click **Log in** (choose **Continue with GitHub**).
+2. On your Vercel Dashboard, click **Add New...** → **Project**.
+3. Locate `Student_Marketplace` from the GitHub repository list and click **Import**.
+
+### 3. Configure the Project
+1. **Project Name**: `campuskart` (or keep default).
+2. **Framework Preset**: Confirm **Next.js** is automatically detected.
+3. **Root Directory**: `./` (leave default).
+4. **Build and Output Settings**: Leave defaults (`npm run build`).
+
+### 4. Add Environment Variables
+Expand the **Environment Variables** section:
+- **Key**: `MONGODB_URI`
+- **Value**: Your full MongoDB Atlas connection string (e.g. `mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/campuskart?retryWrites=true&w=majority`)
+- **Environments**: Check all three: **Production**, **Preview**, and **Development**.
+- Click **Add**.
+
+### 5. Deploy & Verify
+1. Click **Deploy**.
+2. Vercel will initiate the build pipeline:
+   - Installing dependencies (`npm install`)
+   - Type-checking with TypeScript
+   - Prerendering static and serverless dynamic API routes
+3. Once completed (approx. 60–90 seconds), Vercel displays the celebration screen with your live production URL (e.g. `https://campuskart.vercel.app`).
+4. Click **Visit** to open your live marketplace!
 
 ---
 

@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 import dns from "dns";
 
 // Ensure SRV records can be resolved in local environments where ISP DNS blocks them
-if (typeof dns.setServers === "function") {
+if (
+  process.env.NODE_ENV !== "production" &&
+  !process.env.VERCEL &&
+  typeof dns.setServers === "function"
+) {
   try {
     dns.setServers(["8.8.8.8", "1.1.1.1"]);
   } catch {
@@ -45,6 +49,8 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   if (!cached.promise) {
     const opts: mongoose.ConnectOptions = {
       bufferCommands: false,
+      dbName: "campuskart",
+      maxPoolSize: 10,
     };
 
     cached.promise = mongoose
