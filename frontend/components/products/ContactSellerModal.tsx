@@ -109,17 +109,17 @@ export function ContactSellerModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in"
+        className="fixed inset-0 bg-black/50"
         onClick={handleReset}
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl animate-in zoom-in-95 border border-neutral-200">
+      <div className="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-lg border border-neutral-200">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-neutral-100">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#fff2ee] text-[#ff4000]">
-              <MessageSquare className="h-5 w-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fff2ee] text-[#ff4000]">
+              <MessageSquare className="h-4.5 w-4.5" />
             </div>
             <div>
               <h3 className="text-base font-bold text-neutral-900">
@@ -132,7 +132,7 @@ export function ContactSellerModal({
           </div>
           <button
             onClick={handleReset}
-            className="rounded-xl p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 cursor-pointer"
+            className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -140,17 +140,17 @@ export function ContactSellerModal({
 
         {submitted ? (
           <div className="py-8 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 mb-4 animate-in zoom-in">
-              <CheckCircle2 className="h-8 w-8" />
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 mb-4">
+              <CheckCircle2 className="h-6 w-6" />
             </div>
-            <h4 className="text-lg font-bold text-neutral-900">
-              Enquiry Sent Successfully!
+            <h4 className="text-base font-bold text-neutral-900">
+              Enquiry Sent Successfully
             </h4>
-            <p className="mt-2 text-xs sm:text-sm text-neutral-600 max-w-sm mx-auto leading-relaxed">
+            <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 max-w-sm mx-auto leading-relaxed">
               We notified <span className="font-semibold text-neutral-900">{product.seller.name}</span> ({product.seller.email}). You can arrange a handover meetup near {product.location || "campus"}.
             </p>
             <div className="mt-6">
-              <Button onClick={handleReset} className="rounded-xl px-6 font-bold">
+              <Button onClick={handleReset} className="rounded-lg px-6 font-medium">
                 Done
               </Button>
             </div>
@@ -158,14 +158,14 @@ export function ContactSellerModal({
         ) : (
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             {serverError && (
-              <div className="rounded-xl bg-rose-50 p-3 text-xs font-semibold text-rose-600 border border-rose-200 flex items-center gap-2">
+              <div className="rounded-lg bg-rose-50 p-3 text-xs font-semibold text-rose-600 border border-rose-200 flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{serverError}</span>
               </div>
             )}
 
             {/* Item summary banner */}
-            <div className="rounded-2xl bg-neutral-50 p-3 text-xs text-neutral-600 border border-neutral-100 flex items-center justify-between">
+            <div className="rounded-lg bg-neutral-50 p-3 text-xs text-neutral-600 border border-neutral-100 flex items-center justify-between">
               <div className="truncate pr-2">
                 <span className="font-semibold text-neutral-900 truncate block">
                   {product.name}
@@ -180,7 +180,7 @@ export function ContactSellerModal({
             </div>
 
             {isSold && (
-              <div className="rounded-xl bg-neutral-100 p-3 text-xs font-semibold text-neutral-700 border border-neutral-200">
+              <div className="rounded-lg bg-neutral-100 p-3 text-xs font-semibold text-neutral-700 border border-neutral-200">
                 ⚠️ This item has been marked as sold. Enquiries are disabled.
               </div>
             )}
@@ -199,7 +199,7 @@ export function ContactSellerModal({
                     setBuyerName(e.target.value);
                     if (errors.buyerName) setErrors((prev) => ({ ...prev, buyerName: "" }));
                   }}
-                  className={`w-full rounded-xl border py-2 pl-9 pr-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
+                  className={`w-full rounded-lg border py-2 pl-9 pr-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
                     errors.buyerName
                       ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
                       : "border-neutral-300 focus:border-[#ff4000] focus:ring-[#ff4000]"
@@ -223,7 +223,7 @@ export function ContactSellerModal({
                     setBuyerEmail(e.target.value);
                     if (errors.buyerEmail) setErrors((prev) => ({ ...prev, buyerEmail: "" }));
                   }}
-                  className={`w-full rounded-xl border py-2 pl-9 pr-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
+                  className={`w-full rounded-lg border py-2 pl-9 pr-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
                     errors.buyerEmail
                       ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
                       : "border-neutral-300 focus:border-[#ff4000] focus:ring-[#ff4000]"
@@ -245,7 +245,7 @@ export function ContactSellerModal({
                   setMessage(e.target.value);
                   if (errors.message) setErrors((prev) => ({ ...prev, message: "" }));
                 }}
-                className={`w-full rounded-xl border p-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
+                className={`w-full rounded-lg border p-3 text-sm text-neutral-900 focus:outline-none focus:ring-1 ${
                   errors.message
                     ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
                     : "border-neutral-300 focus:border-[#ff4000] focus:ring-[#ff4000]"
@@ -260,14 +260,14 @@ export function ContactSellerModal({
                 variant="outline"
                 disabled={isSubmitting}
                 onClick={handleReset}
-                className="rounded-xl"
+                className="rounded-lg"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSold || isSubmitting}
-                className="rounded-xl gap-2 font-bold"
+                className="rounded-lg gap-2 font-medium"
               >
                 {isSubmitting ? (
                   <>

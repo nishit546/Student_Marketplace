@@ -112,12 +112,12 @@ export default function DashboardEnquiries() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center">
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-8 text-center">
           <AlertCircle className="mx-auto h-8 w-8 text-rose-500 mb-2" />
           <p className="text-sm text-neutral-700">{error}</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-neutral-200 bg-white p-10 text-center">
+        <div className="rounded-lg border border-neutral-200 bg-white p-10 text-center">
           <MessageSquare className="mx-auto h-10 w-10 text-neutral-300 mb-3" />
           <h3 className="font-bold text-neutral-900">No enquiries found</h3>
           <p className="text-sm text-neutral-500 mt-1">
@@ -135,14 +135,14 @@ export default function DashboardEnquiries() {
             const isExpanded = expandedId === eId;
 
             return (
-              <div key={eId} className="rounded-2xl border border-neutral-200/80 bg-white overflow-hidden transition-all hover:shadow-sm">
+              <div key={eId} className="rounded-lg border border-neutral-200 bg-white overflow-hidden transition-colors">
                 {/* Header Row */}
                 <button
                   type="button"
                   onClick={() => setExpandedId(isExpanded ? null : eId)}
-                  className="w-full text-left flex items-center gap-3 p-4 cursor-pointer"
+                  className="w-full text-left flex items-center gap-3 p-3.5 cursor-pointer"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700 font-bold text-sm shrink-0">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-700 font-bold text-xs shrink-0">
                     {enq.buyerName.charAt(0)}
                   </div>
                   <div className="min-w-0 flex-1">

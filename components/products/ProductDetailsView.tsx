@@ -13,7 +13,6 @@ import {
   Check,
   Building,
   GraduationCap,
-  Sparkles,
 } from "lucide-react";
 import { Product } from "@/types";
 import { ProductGallery } from "@/components/products/ProductGallery";
@@ -81,7 +80,7 @@ export function ProductDetailsView({
           <button
             onClick={handleShare}
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-1.5 font-semibold text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
           >
             {copied ? (
               <>
@@ -109,10 +108,9 @@ export function ProductDetailsView({
             />
 
             {/* Description Card */}
-            <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-7 shadow-sm">
-              <h2 className="text-base font-bold text-neutral-900 mb-3 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#ff4000]" />
-                <span>Product Description</span>
+            <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-7">
+              <h2 className="text-base font-bold text-neutral-900 mb-3">
+                Product Description
               </h2>
               <div className="prose prose-sm text-neutral-600 leading-relaxed whitespace-pre-line">
                 {product.description}
@@ -163,7 +161,7 @@ export function ProductDetailsView({
           {/* Right Column: Pricing, Primary CTAs & Seller Information (5 cols) */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             {/* Purchase & Action Box */}
-            <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-7 shadow-sm">
+            <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-7">
               {/* Category & Status pill */}
               <div className="flex items-center justify-between gap-2 mb-3">
                 <Badge variant="secondary" className="font-medium text-xs">
@@ -184,29 +182,29 @@ export function ProductDetailsView({
               </h1>
 
               {/* Price Banner */}
-              <div className="mt-4 flex items-baseline gap-3 rounded-2xl bg-[#fff7f4] p-4 border border-[#ff4000]/15">
+              <div className="mt-4 flex items-baseline gap-3 rounded-lg bg-[#fff7f4] p-3.5 border border-[#ff4000]/15">
                 <span className={`text-3xl sm:text-4xl font-black tracking-tight ${
                   isFree ? "text-emerald-600" : "text-[#ff4000]"
                 }`}>
                   {formatPrice(product.price, product.listingType)}
                 </span>
                 {product.listingType === "For Sale" && (
-                  <span className="text-xs font-semibold text-neutral-500">
+                  <span className="text-xs font-medium text-neutral-500">
                     Negotiable on campus handover
                   </span>
                 )}
               </div>
 
               {/* Interactive Action Buttons */}
-              <div className="mt-6 flex flex-col gap-3">
+              <div className="mt-6 flex flex-col gap-2.5">
                 {/* Contact Seller Button */}
                 <Button
                   onClick={() => setContactModalOpen(true)}
                   disabled={isSold}
                   size="lg"
-                  className="w-full justify-center gap-2 rounded-xl text-base font-bold shadow-md hover:shadow-lg transition-all"
+                  className="w-full justify-center gap-2 rounded-lg font-medium"
                 >
-                  <MessageSquare className="h-5 w-5" />
+                  <MessageSquare className="h-4.5 w-4.5" />
                   <span>{isSold ? "Item Already Sold" : "Contact Seller"}</span>
                 </Button>
 
@@ -218,7 +216,7 @@ export function ProductDetailsView({
                       disabled={isSold}
                       variant="outline"
                       size="lg"
-                      className="flex-1 justify-center gap-2 rounded-xl border-neutral-300 font-semibold text-neutral-800 hover:border-[#ff4000] hover:text-[#ff4000]"
+                      className="flex-1 justify-center gap-2 rounded-lg border-neutral-300 font-medium text-neutral-800 hover:border-neutral-400"
                     >
                       <Tag className="h-4 w-4" />
                       <span>{isSold ? "Offer Closed" : "Make an Offer"}</span>
@@ -239,7 +237,7 @@ export function ProductDetailsView({
               </div>
 
               {/* Campus Meetup Tag */}
-              <div className="mt-6 pt-5 border-t border-neutral-100 flex items-center gap-2 text-xs text-neutral-500">
+              <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center gap-2 text-xs text-neutral-500">
                 <MapPin className="h-4 w-4 text-[#ff4000] shrink-0" />
                 <span>
                   Meetup: <strong className="text-neutral-800">{product.location || product.seller.college}</strong>
@@ -248,30 +246,30 @@ export function ProductDetailsView({
             </div>
 
             {/* Seller Information Card */}
-            <div className="rounded-3xl border border-neutral-200/90 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-neutral-200 bg-white p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
                   Seller Information
                 </h3>
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
                   <ShieldCheck className="h-3 w-3" />
                   <span>Student ID Verified</span>
                 </span>
               </div>
 
               <div className="flex items-center gap-3.5 mb-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ff4000] text-white font-bold text-lg shadow-sm">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ff4000] text-white font-bold text-base">
                   {product.seller.name.charAt(0)}
                 </div>
                 <div>
-                  <h4 className="text-base font-bold text-neutral-900 leading-snug">
+                  <h4 className="text-sm font-bold text-neutral-900 leading-snug">
                     {product.seller.name}
                   </h4>
                   <p className="text-xs text-neutral-500">{product.seller.email}</p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-neutral-600 bg-neutral-50 rounded-2xl p-3.5 border border-neutral-100">
+              <div className="space-y-2 text-xs text-neutral-600 bg-neutral-50 rounded-lg p-3 border border-neutral-100">
                 {product.seller.college && (
                   <div className="flex items-center gap-2">
                     <Building className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
@@ -286,21 +284,21 @@ export function ProductDetailsView({
                 )}
                 <div className="flex items-center gap-2">
                   <Clock className="h-3.5 w-3.5 text-neutral-400 shrink-0" />
-                  <span>Usually responds in &lt; 30 minutes</span>
+                  <span>Usually responds within an hour</span>
                 </div>
               </div>
             </div>
 
             {/* Safety Tips Card */}
-            <div className="rounded-3xl border border-neutral-200/90 bg-[#fffdfc] p-6 text-xs text-neutral-600 shadow-sm">
-              <h4 className="font-bold text-neutral-900 mb-2 flex items-center gap-1.5">
+            <div className="rounded-xl border border-neutral-200 bg-white p-5 text-xs text-neutral-600">
+              <h4 className="font-semibold text-neutral-900 mb-2 flex items-center gap-1.5">
                 <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                <span>Safe Campus Meetup Guidelines</span>
+                <span>Meetup Safety Checklist</span>
               </h4>
-              <ul className="space-y-1.5 list-disc list-inside text-neutral-500 leading-relaxed">
+              <ul className="space-y-1 list-disc list-inside text-neutral-500 leading-relaxed">
                 <li>Meet in public campus areas (SAC, Library, or Canteen).</li>
-                <li>Physically test and inspect the item before paying.</li>
-                <li>Make payment directly using UPI only on physical handover.</li>
+                <li>Inspect and test the item before completing payment.</li>
+                <li>Pay directly via UPI upon physical handover.</li>
               </ul>
             </div>
           </div>
@@ -311,16 +309,16 @@ export function ProductDetailsView({
           <section className="pt-10 border-t border-neutral-200">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight">
+                <h3 className="text-xl font-bold text-neutral-900 tracking-tight">
                   Similar Items on Campus
                 </h3>
-                <p className="text-xs sm:text-sm text-neutral-500">
+                <p className="text-xs text-neutral-500">
                   More listings under {product.category}
                 </p>
               </div>
               <Link
                 href={`/explore?category=${encodeURIComponent(product.category)}`}
-                className="text-xs sm:text-sm font-semibold text-[#ff4000] hover:underline"
+                className="text-xs font-semibold text-[#ff4000] hover:underline"
               >
                 View all in {product.category}
               </Link>
@@ -350,4 +348,3 @@ export function ProductDetailsView({
     </div>
   );
 }
-

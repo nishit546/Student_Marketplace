@@ -13,7 +13,7 @@ export function FormErrorMessage({ message, className }: FormErrorMessageProps) 
   return (
     <div
       className={cn(
-        "flex items-center gap-1.5 text-xs font-semibold text-rose-500 animate-in fade-in slide-in-from-top-1 duration-200 mt-1.5",
+        "flex items-center gap-1.5 text-xs font-medium text-rose-500 mt-1.5",
         className
       )}
     >

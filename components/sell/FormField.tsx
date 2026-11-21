@@ -26,7 +26,7 @@ export function FormField({
       </label>
       {children}
       {error ? (
-        <p className="text-xs font-semibold text-rose-500 animate-in fade-in">
+        <p className="text-xs font-medium text-rose-500">
           {error}
         </p>
       ) : helperText ? (

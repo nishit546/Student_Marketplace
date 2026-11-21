@@ -23,14 +23,11 @@ export function FavoriteButton({
 }: FavoriteButtonProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const saved = isFavorite(productId);
-  const [isAnimating, setIsAnimating] = React.useState(false);
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsAnimating(true);
     const nextSaved = await toggleFavorite(productId);
-    setTimeout(() => setIsAnimating(false), 300);
     if (onToggle) {
       onToggle(nextSaved);
     }
@@ -38,8 +35,8 @@ export function FavoriteButton({
 
   const sizeClasses = {
     sm: "h-8 px-2.5 text-xs gap-1.5",
-    default: "h-11 px-4 text-sm gap-2",
-    lg: "h-12 px-5 text-base gap-2.5",
+    default: "h-10 px-4 text-sm gap-2",
+    lg: "h-11 px-5 text-sm gap-2",
   }[size];
 
   return (
@@ -47,10 +44,10 @@ export function FavoriteButton({
       onClick={handleClick}
       type="button"
       className={cn(
-        "inline-flex items-center justify-center rounded-xl border font-semibold transition-all duration-200 active:scale-95 cursor-pointer",
+        "inline-flex items-center justify-center rounded-lg border font-medium transition-colors cursor-pointer",
         saved
           ? "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
-          : "border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300",
+          : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400",
         sizeClasses,
         className
       )}
@@ -59,16 +56,14 @@ export function FavoriteButton({
     >
       <Heart
         className={cn(
-          "transition-all duration-200",
-          size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-5 w-5" : "h-4 w-4",
+          size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-4 w-4" : "h-4 w-4",
           saved
-            ? "fill-current text-rose-500 scale-110"
-            : "text-neutral-500",
-          isAnimating && "scale-125"
+            ? "fill-current text-rose-600"
+            : "text-neutral-500"
         )}
       />
       {showLabel && (
-        <span>{saved ? "Saved to Favorites" : "Add to Favorites"}</span>
+        <span>{saved ? "Saved in Favorites" : "Save to Favorites"}</span>
       )}
     </button>
   );

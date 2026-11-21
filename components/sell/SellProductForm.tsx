@@ -3,39 +3,40 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import {
-  Tag,
-  Sparkles,
   CheckCircle2,
   ArrowRight,
   ShieldCheck,
-  Building,
 } from "lucide-react";
-import { useProducts, DEMO_USER } from "@/context/ProductsContext";
 import { Product, ListingType } from "@/types";
+import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/sell/FormField";
 import { ImageUploader } from "@/components/sell/ImageUploader";
-import { Button } from "@/components/ui/button";
+import { useProducts } from "@/context/ProductsContext";
 
 interface SellProductFormProps {
-  initialProduct?: Product;
+  initialData?: Product | null;
+  initialProduct?: Product | null;
   isEditing?: boolean;
   onSuccess?: (product: Product) => void;
 }
 
 const CATEGORIES = [
-  "Books",
+  "Books & Textbooks",
+  "Calculators",
   "Electronics",
-  "Furniture",
+  "Furniture & Dorm",
   "Stationery",
-  "Sports",
+  "Lab & Engineering",
+  "Sports & Cycles",
   "Other",
 ];
 
-const CONDITIONS = ["New", "Like New", "Good", "Fair"];
+const CONDITIONS = ["Like New", "Good", "Fair", "New"];
 
-const LISTING_TYPES = ["For Sale", "Exchange", "Free"];
+const LISTING_TYPES: ListingType[] = ["For Sale", "Free", "Exchange"];
 
 export function SellProductForm({
+  initialData,
   initialProduct,
   isEditing = false,
   onSuccess,
@@ -43,156 +44,135 @@ export function SellProductForm({
   const router = useRouter();
   const { addProduct, updateProduct } = useProducts();
 
-  // Form Fields
-  const [name, setName] = React.useState(initialProduct?.name || "");
+  const activeProduct = initialData || initialProduct || null;
+
+  // Form State
+  const [name, setName] = React.useState(activeProduct?.name || "");
   const [description, setDescription] = React.useState(
-    initialProduct?.description || ""
+    activeProduct?.description || ""
   );
-  const [price, setPrice] = React.useState<string>(
-    initialProduct ? String(initialProduct.price) : ""
+  const [price, setPrice] = React.useState(
+    activeProduct?.price ? String(activeProduct.price) : ""
   );
   const [category, setCategory] = React.useState(
-    initialProduct?.category || "Books"
+    activeProduct?.category || CATEGORIES[0]
   );
   const [condition, setCondition] = React.useState(
-    initialProduct?.condition || "Good"
+    activeProduct?.condition || "Good"
   );
   const [listingType, setListingType] = React.useState<ListingType>(
-    initialProduct?.listingType || "For Sale"
+    activeProduct?.listingType || "For Sale"
   );
   const [images, setImages] = React.useState<string[]>(
-    initialProduct?.images || []
+    activeProduct?.images && activeProduct.images.length > 0
+      ? activeProduct.images
+      : []
   );
+
+  // Seller details state
   const [sellerName, setSellerName] = React.useState(
-    initialProduct?.seller.name || DEMO_USER.name
+    activeProduct?.seller?.name || "Arnav Gupta"
   );
   const [sellerEmail, setSellerEmail] = React.useState(
-    initialProduct?.seller.email || DEMO_USER.email
+    activeProduct?.seller?.email || "arnav.gupta@college.edu"
+  );
+  const [sellerCollege, setSellerCollege] = React.useState(
+    activeProduct?.seller?.college || "IIT Delhi Campus"
   );
   const [location, setLocation] = React.useState(
-    initialProduct?.location || initialProduct?.seller.college || DEMO_USER.college
+    activeProduct?.location || "Hostel Block B, Room 312"
   );
 
-  // Validation Errors
+  // Errors & Loading
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [successProduct, setSuccessProduct] = React.useState<Product | null>(null);
+  const [successProduct, setSuccessProduct] = React.useState<Product | null>(
+    null
+  );
 
-  // Validate fields
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
+  const validate = () => {
+    const errs: Record<string, string> = {};
 
-    if (!name.trim()) {
-      newErrors.name = "Please enter a product title.";
-    } else if (name.trim().length < 3) {
-      newErrors.name = "Title must be at least 3 characters.";
-    }
+    if (!name.trim()) errs.name = "Title is required";
+    else if (name.trim().length < 3) errs.name = "Title must be at least 3 characters";
 
-    if (!description.trim()) {
-      newErrors.description = "Please describe your item.";
-    } else if (description.trim().length < 10) {
-      newErrors.description = "Please provide at least 10 characters describing the item.";
-    }
+    if (!description.trim()) errs.description = "Description is required";
+    else if (description.trim().length < 10)
+      errs.description = "Provide at least 10 characters describing the item";
 
     if (listingType === "For Sale") {
-      const numPrice = parseFloat(price);
+      const numPrice = Number(price);
       if (!price || isNaN(numPrice) || numPrice <= 0) {
-        newErrors.price = "Enter a valid positive price in ₹ for items listed for sale.";
+        errs.price = "Enter a valid price greater than 0";
       }
     }
 
-    if (!category) {
-      newErrors.category = "Please select a category.";
+    if (!images || images.length === 0) {
+      errs.images = "At least one product photo is required";
     }
 
-    if (!condition) {
-      newErrors.condition = "Please select the condition.";
+    if (!sellerName.trim()) errs.sellerName = "Seller name is required";
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!sellerEmail.trim() || !emailRegex.test(sellerEmail.trim())) {
+      errs.sellerEmail = "Valid email is required";
     }
 
-    if (!sellerName.trim()) {
-      newErrors.sellerName = "Please provide seller name.";
-    }
-
-    if (!sellerEmail.trim() || !sellerEmail.includes("@")) {
-      newErrors.sellerEmail = "Please provide a valid college email address.";
-    }
-
-    if (images.length === 0) {
-      newErrors.images = "Please attach at least one photo of the item.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    if (!validate()) {
       return;
     }
 
     setIsSubmitting(true);
 
-    const calculatedPrice =
-      listingType === "Free" ? 0 : parseFloat(price) || 0;
+    const productPayload = {
+      name: name.trim(),
+      description: description.trim(),
+      price: listingType === "Free" ? 0 : Number(price) || 0,
+      category,
+      condition,
+      listingType,
+      images:
+        images.length > 0
+          ? images
+          : [
+              "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80",
+            ],
+      location: location.trim(),
+      seller: {
+        name: sellerName.trim(),
+        email: sellerEmail.trim().toLowerCase(),
+        college: sellerCollege.trim(),
+        year: initialData?.seller?.year || "3rd Year B.Tech",
+      },
+    };
 
-    if (isEditing && initialProduct) {
-      const pId = initialProduct.id || initialProduct._id || "";
-      const updatedData: Partial<Product> = {
-        name: name.trim(),
-        description: description.trim(),
-        price: calculatedPrice,
-        category,
-        condition,
-        listingType,
-        images,
-        location: location.trim(),
-        seller: {
-          ...initialProduct.seller,
-          name: sellerName.trim(),
-          email: sellerEmail.trim(),
-          college: location.trim(),
-        },
-      };
-
-      await updateProduct(pId, updatedData);
+    if (isEditing && activeProduct) {
+      const targetId = activeProduct.id || activeProduct._id || "";
+      const success = await updateProduct(targetId, productPayload);
       setIsSubmitting(false);
-
-      if (onSuccess) {
-        onSuccess({ ...initialProduct, ...updatedData } as Product);
-      } else {
-        router.push(`/product/${pId}`);
+      if (success) {
+        const mergedProduct: Product = {
+          ...activeProduct,
+          ...productPayload,
+          id: targetId,
+          _id: targetId,
+          updatedAt: new Date().toISOString(),
+        };
+        if (onSuccess) onSuccess(mergedProduct);
+        else router.push(`/product/${targetId}`);
       }
     } else {
-      // New Listing
-      const newProduct = await addProduct({
-        name: name.trim(),
-        description: description.trim(),
-        price: calculatedPrice,
-        category,
-        condition,
-        listingType,
-        images,
-        location: location.trim(),
-        seller: {
-          name: sellerName.trim(),
-          email: sellerEmail.trim(),
-          college: location.trim(),
-          year: "3rd Year Student",
-          phone: "+91 98765 43210",
-        },
-        status: "Available",
-        featured: false,
-      });
-
+      const newProduct = await addProduct(productPayload);
       setIsSubmitting(false);
-      setSuccessProduct(newProduct);
-
-      if (onSuccess) {
-        onSuccess(newProduct);
-      } else {
-        // Smooth redirect to newly created product
+      if (newProduct) {
+        setSuccessProduct(newProduct);
+        if (onSuccess) onSuccess(newProduct);
         setTimeout(() => {
           router.push(`/product/${newProduct.id || newProduct._id}`);
         }, 1200);
@@ -202,22 +182,22 @@ export function SellProductForm({
 
   if (successProduct) {
     return (
-      <div className="rounded-3xl border border-neutral-200/90 bg-white p-8 sm:p-12 text-center shadow-lg animate-in zoom-in-95">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 mb-5">
-          <CheckCircle2 className="h-9 w-9" />
+      <div className="rounded-xl border border-neutral-200 bg-white p-8 sm:p-10 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 mb-4">
+          <CheckCircle2 className="h-6 w-6" />
         </div>
-        <h2 className="text-2xl font-black text-neutral-900 tracking-tight">
-          Listing Published Successfully!
+        <h2 className="text-xl font-bold text-neutral-900 tracking-tight">
+          Listing Published
         </h2>
-        <p className="mt-2 text-sm text-neutral-600 max-w-md mx-auto leading-relaxed">
+        <p className="mt-1.5 text-sm text-neutral-600 max-w-md mx-auto leading-relaxed">
           Your product <strong className="text-neutral-900">&quot;{successProduct.name}&quot;</strong> is now live on CampusKart. Redirecting to your listing page...
         </p>
         <div className="mt-6 flex items-center justify-center gap-3">
           <Button
             onClick={() => router.push(`/product/${successProduct.id}`)}
-            className="rounded-xl px-6 gap-2"
+            className="rounded-lg px-5 gap-2 font-medium"
           >
-            <span>View Listing Now</span>
+            <span>View Listing</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -228,17 +208,16 @@ export function SellProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-8 rounded-3xl border border-neutral-200/90 bg-white p-6 sm:p-10 shadow-sm"
+      className="flex flex-col gap-6 rounded-xl border border-neutral-200 bg-white p-6 sm:p-8"
     >
       {/* Section 1: Product Images */}
       <div>
-        <div className="mb-4">
-          <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#ff4000]" />
-            <span>1. Product Photos</span>
+        <div className="mb-3">
+          <h2 className="text-sm font-bold text-neutral-900">
+            1. Product Photos
           </h2>
           <p className="text-xs text-neutral-500">
-            Clear, well-lit photos attract 3x faster campus responses.
+            Clear, well-lit photos help campus buyers inspect condition.
           </p>
         </div>
         <ImageUploader
@@ -261,23 +240,22 @@ export function SellProductForm({
 
       {/* Section 2: General Details */}
       <div>
-        <div className="mb-4">
-          <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-            <Tag className="h-4 w-4 text-[#ff4000]" />
-            <span>2. Item Details</span>
+        <div className="mb-3">
+          <h2 className="text-sm font-bold text-neutral-900">
+            2. Item Details
           </h2>
           <p className="text-xs text-neutral-500">
-            Tell classmates what you are selling or giving away.
+            Provide details about what you are selling or giving away.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5">
+        <div className="grid grid-cols-1 gap-4">
           {/* Product Name */}
           <FormField
             label="Product Title"
             required
             error={errors.name}
-            helperText="Include brand, edition, or model (e.g. Casio fx-991EX ClassWiz or OS Concepts 10th Ed)"
+            helperText="Include model or edition (e.g. Casio fx-991EX or OS Concepts 10th Ed)"
           >
             <input
               type="text"
@@ -287,7 +265,7 @@ export function SellProductForm({
                 if (errors.name) setErrors((prev) => ({ ...prev, name: "" }));
               }}
               placeholder="e.g. Casio fx-991EX Scientific Calculator"
-              className="w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
             />
           </FormField>
 
@@ -296,7 +274,7 @@ export function SellProductForm({
             label="Description"
             required
             error={errors.description}
-            helperText="Mention how long you used it, reason for selling, whether notes/markings exist, etc."
+            helperText="Mention how long you used it, condition notes, included accessories, etc."
           >
             <textarea
               rows={4}
@@ -306,18 +284,18 @@ export function SellProductForm({
                 if (errors.description)
                   setErrors((prev) => ({ ...prev, description: "" }));
               }}
-              placeholder="Describe the condition, included accessories, purchase year, and where you can meet on campus..."
-              className="w-full rounded-xl border border-neutral-300 bg-white p-3.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20"
+              placeholder="Describe condition, accessories, and where on campus you can meet..."
+              className="w-full rounded-lg border border-neutral-300 bg-white p-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
             />
           </FormField>
 
           {/* Category, Condition, Listing Type Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <FormField label="Category" required error={errors.category}>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-sm font-medium text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20 cursor-pointer"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000] cursor-pointer"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -331,7 +309,7 @@ export function SellProductForm({
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-sm font-medium text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20 cursor-pointer"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000] cursor-pointer"
               >
                 {CONDITIONS.map((cond) => (
                   <option key={cond} value={cond}>
@@ -350,7 +328,7 @@ export function SellProductForm({
                     setPrice("0");
                   }
                 }}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-sm font-medium text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20 cursor-pointer"
+                className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000] cursor-pointer"
               >
                 {LISTING_TYPES.map((type) => (
                   <option key={type} value={type}>
@@ -361,7 +339,7 @@ export function SellProductForm({
             </FormField>
           </div>
 
-          {/* Price Field (conditional) */}
+          {/* Price Field */}
           {listingType === "For Sale" ? (
             <FormField
               label="Price (in ₹)"
@@ -370,7 +348,7 @@ export function SellProductForm({
               helperText="Set a fair price. Buyers can negotiate or make counter-offers."
             >
               <div className="relative max-w-xs">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-neutral-400">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-neutral-400">
                   ₹
                 </span>
                 <input
@@ -382,23 +360,23 @@ export function SellProductForm({
                     if (errors.price) setErrors((prev) => ({ ...prev, price: "" }));
                   }}
                   placeholder="e.g. 650"
-                  className="w-full rounded-xl border border-neutral-300 bg-white py-2.5 pl-8 pr-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20 font-bold"
+                  className="w-full rounded-lg border border-neutral-300 bg-white py-2 pl-8 pr-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000] font-semibold"
                 />
               </div>
             </FormField>
           ) : listingType === "Free" ? (
-            <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
-              <span className="font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
-                Free Senior Giveaway
+            <div className="rounded-lg bg-emerald-50 p-3.5 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+              <span className="font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                Free Giveaway
               </span>
-              <span>This product will be shown with ₹0 / FREE price tag to help juniors save money.</span>
+              <span>This product will be listed with a ₹0 / FREE price tag.</span>
             </div>
           ) : (
-            <div className="rounded-2xl bg-orange-50 p-4 border border-orange-200 text-xs text-orange-900 flex items-center gap-2">
-              <span className="font-bold uppercase tracking-wider text-orange-700 bg-orange-100 px-2 py-0.5 rounded">
+            <div className="rounded-lg bg-orange-50 p-3.5 border border-orange-200 text-xs text-orange-900 flex items-center gap-2">
+              <span className="font-semibold uppercase tracking-wider text-orange-700 bg-orange-100 px-1.5 py-0.5 rounded">
                 Exchange Item
               </span>
-              <span>Classmates will contact you with their items to exchange (e.g., textbook for novel).</span>
+              <span>Classmates will contact you with their items to exchange.</span>
             </div>
           )}
         </div>
@@ -408,23 +386,22 @@ export function SellProductForm({
 
       {/* Section 3: Seller Contact & Campus Location */}
       <div>
-        <div className="mb-4">
-          <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-            <Building className="h-4 w-4 text-[#ff4000]" />
-            <span>3. Campus Meetup & Contact Details</span>
+        <div className="mb-3">
+          <h2 className="text-sm font-bold text-neutral-900">
+            3. Campus Location & Contact Details
           </h2>
           <p className="text-xs text-neutral-500">
-            Used to coordinate safe hand-to-hand campus handover.
+            Used to coordinate campus meetups and handover.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <FormField label="Your Full Name" required error={errors.sellerName}>
             <input
               type="text"
               value={sellerName}
               onChange={(e) => setSellerName(e.target.value)}
-              className="w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
             />
           </FormField>
 
@@ -433,10 +410,21 @@ export function SellProductForm({
               type="email"
               value={sellerEmail}
               onChange={(e) => setSellerEmail(e.target.value)}
-              className="w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
             />
           </FormField>
 
+          <FormField label="College / Campus" required>
+            <input
+              type="text"
+              value={sellerCollege}
+              onChange={(e) => setSellerCollege(e.target.value)}
+              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
+            />
+          </FormField>
+        </div>
+
+        <div className="mt-3">
           <FormField
             label="Handover Location"
             required
@@ -447,25 +435,25 @@ export function SellProductForm({
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Hostel B, SAC, or Library"
-              className="w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-2 focus:ring-[#ff4000]/20"
+              className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-[#ff4000] focus:outline-none focus:ring-1 focus:ring-[#ff4000]"
             />
           </FormField>
         </div>
       </div>
 
       {/* Submit Button */}
-      <div className="border-t border-neutral-100 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="border-t border-neutral-100 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-xs text-neutral-500">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           <span>Zero platform commissions. 100% peer-to-peer.</span>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
           <Button
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            className="rounded-xl flex-1 sm:flex-initial"
+            className="rounded-lg flex-1 sm:flex-initial"
           >
             Cancel
           </Button>
@@ -473,10 +461,10 @@ export function SellProductForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            size="lg"
-            className="rounded-xl px-8 font-bold flex-1 sm:flex-initial gap-2 shadow-md hover:shadow-lg"
+            size="default"
+            className="rounded-lg px-6 font-medium flex-1 sm:flex-initial gap-2"
           >
-            <span>{isEditing ? "Save Changes" : "Post Campus Listing"}</span>
+            <span>{isEditing ? "Save Changes" : "Post Listing"}</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -484,4 +472,3 @@ export function SellProductForm({
     </form>
   );
 }
-

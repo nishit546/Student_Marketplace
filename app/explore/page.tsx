@@ -153,42 +153,43 @@ function ExploreContent() {
     <div className="min-h-screen bg-[#fafafa] py-8 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Page Heading */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-black text-neutral-900 tracking-tight">
-                Explore CampusKart
+              <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
+                Explore Marketplace
               </h1>
-              <p className="mt-1.5 text-sm sm:text-base text-neutral-600 max-w-2xl">
-                Browse pre-owned textbooks, calculators, dorm furniture, electronics, and senior giveaways from students across campus.
+              <p className="mt-1 text-sm text-neutral-600 max-w-2xl">
+                Browse pre-owned textbooks, calculators, dorm furniture, and electronics from campus students.
               </p>
             </div>
 
-            {/* Quick stats pill */}
-            <div className="text-xs font-semibold text-neutral-500 bg-white border border-neutral-200/80 rounded-xl px-3.5 py-2 shrink-0 shadow-sm">
-              Showing <span className="text-[#ff4000] font-black">{filteredProducts.length}</span> of {products.length} listings
+            {/* Quick stats */}
+            <div className="text-xs font-medium text-neutral-500 bg-white border border-neutral-200 rounded-lg px-3 py-1.5 shrink-0">
+              Showing <span className="font-semibold text-neutral-900">{filteredProducts.length}</span> of {products.length} listings
             </div>
           </div>
         </div>
 
         {/* Search & Sort Bar Row */}
-        <div className="mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="mb-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <div className="flex-1">
             <ProductSearch value={search} onChange={setSearch} />
           </div>
 
-          <div className="flex items-center gap-2.5 justify-between sm:justify-end">
+          <div className="flex items-center gap-2 justify-between sm:justify-end">
             {/* Mobile Filter Trigger Button */}
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden rounded-xl border-neutral-200 bg-white text-xs font-semibold gap-1.5"
+              className="lg:hidden rounded-lg border-neutral-300 bg-white text-xs font-medium gap-1.5"
             >
-              <SlidersHorizontal className="h-4 w-4 text-[#ff4000]" />
+              <SlidersHorizontal className="h-3.5 w-3.5 text-neutral-700" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#ff4000] text-[10px] text-white">
+                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff4000] px-1 text-[10px] font-bold text-white">
                   {activeFiltersCount}
                 </span>
               )}
@@ -201,41 +202,42 @@ function ExploreContent() {
 
         {/* Active Filter Badges Row */}
         {activeFiltersCount > 0 && (
-          <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-neutral-500">Active:</span>
+          <div className="mb-5 flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-neutral-500 mr-1">Active:</span>
             {search.trim() && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-white border border-neutral-200 px-3 py-1 text-xs text-neutral-700">
+              <span className="inline-flex items-center gap-1 rounded-md bg-white border border-neutral-200 px-2 py-0.5 text-xs text-neutral-700">
                 Keyword: &quot;{search}&quot;
-                <button onClick={() => setSearch("")} className="hover:text-[#ff4000]">×</button>
+                <button onClick={() => setSearch("")} className="hover:text-neutral-900 cursor-pointer">×</button>
               </span>
             )}
             {filters.category && filters.category !== "All" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#fff2ee] border border-[#ff4000]/20 px-3 py-1 text-xs text-[#ff4000] font-medium">
+              <span className="inline-flex items-center gap-1 rounded-md bg-[#fff2ee] border border-[#ff4000]/20 px-2 py-0.5 text-xs text-[#ff4000] font-medium">
                 Category: {filters.category}
-                <button onClick={() => setFilters({ ...filters, category: "All" })} className="font-bold">×</button>
+                <button onClick={() => setFilters({ ...filters, category: "All" })} className="font-bold cursor-pointer">×</button>
               </span>
             )}
             {filters.listingType && filters.listingType !== "All" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 border border-neutral-200 px-3 py-1 text-xs text-neutral-800">
+              <span className="inline-flex items-center gap-1 rounded-md bg-neutral-100 border border-neutral-200 px-2 py-0.5 text-xs text-neutral-800">
                 Type: {filters.listingType}
-                <button onClick={() => setFilters({ ...filters, listingType: "All" })}>×</button>
+                <button onClick={() => setFilters({ ...filters, listingType: "All" })} className="cursor-pointer">×</button>
               </span>
             )}
             {filters.condition && filters.condition !== "All" && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 border border-neutral-200 px-3 py-1 text-xs text-neutral-800">
+              <span className="inline-flex items-center gap-1 rounded-md bg-neutral-100 border border-neutral-200 px-2 py-0.5 text-xs text-neutral-800">
                 Condition: {filters.condition}
-                <button onClick={() => setFilters({ ...filters, condition: "All" })}>×</button>
+                <button onClick={() => setFilters({ ...filters, condition: "All" })} className="cursor-pointer">×</button>
               </span>
             )}
             {(filters.minPrice || filters.maxPrice) && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 border border-neutral-200 px-3 py-1 text-xs text-neutral-800">
+              <span className="inline-flex items-center gap-1 rounded-md bg-neutral-100 border border-neutral-200 px-2 py-0.5 text-xs text-neutral-800">
                 ₹{filters.minPrice || "0"} - ₹{filters.maxPrice || "Any"}
-                <button onClick={() => setFilters({ ...filters, minPrice: "", maxPrice: "" })}>×</button>
+                <button onClick={() => setFilters({ ...filters, minPrice: "", maxPrice: "" })} className="cursor-pointer">×</button>
               </span>
             )}
             <button
               onClick={handleResetFilters}
-              className="inline-flex items-center gap-1 text-xs font-bold text-[#ff4000] hover:underline ml-1"
+              type="button"
+              className="inline-flex items-center gap-1 text-xs font-medium text-[#ff4000] hover:underline ml-1 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               <span>Reset</span>
@@ -244,7 +246,7 @@ function ExploreContent() {
         )}
 
         {/* Main Content Area: Sidebar + Grid */}
-        <div className="flex items-start gap-8">
+        <div className="flex items-start gap-6">
           {/* Desktop Filter Sidebar */}
           <ProductFilters
             filters={filters}
@@ -273,7 +275,7 @@ export default function ExplorePage() {
       fallback={
         <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-8">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#ff4000] border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#ff4000] border-t-transparent" />
             <p className="text-xs text-neutral-500 font-medium">Loading marketplace...</p>
           </div>
         </div>
@@ -283,4 +285,3 @@ export default function ExplorePage() {
     </Suspense>
   );
 }
-

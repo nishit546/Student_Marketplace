@@ -140,7 +140,7 @@ export default function DashboardListings() {
 
       {/* Listing Table/Cards */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-neutral-200 bg-white p-10 text-center">
+        <div className="rounded-lg border border-neutral-200 bg-white p-10 text-center">
           <Package className="mx-auto h-10 w-10 text-neutral-300 mb-3" />
           <h3 className="font-bold text-neutral-900">No listings found</h3>
           <p className="text-sm text-neutral-500 mt-1">
@@ -163,12 +163,12 @@ export default function DashboardListings() {
             return (
               <div
                 key={pId}
-                className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border bg-white p-4 transition-all hover:shadow-sm ${
-                  isSold ? "border-neutral-100 opacity-75" : "border-neutral-200/80"
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-lg border bg-white p-3.5 transition-colors ${
+                  isSold ? "border-neutral-200 opacity-75" : "border-neutral-200"
                 }`}
               >
                 {/* Image */}
-                <div className="relative h-16 w-16 shrink-0 rounded-xl overflow-hidden bg-neutral-100">
+                <div className="relative h-14 w-14 shrink-0 rounded-md overflow-hidden bg-neutral-100">
                   <Image
                     src={product.images?.[0] || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=80&q=60"}
                     alt={product.name}

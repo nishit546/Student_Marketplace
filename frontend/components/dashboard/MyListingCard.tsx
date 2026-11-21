@@ -34,10 +34,10 @@ export function MyListingCard({
   const isSold = product.status === "Sold";
 
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-2xl border border-neutral-200/90 bg-white p-4 shadow-sm transition-all hover:border-neutral-300 hover:shadow-md">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white p-4 transition-colors">
       {/* Left: Product Image & Details */}
       <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-        <div className="relative aspect-square h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-100 border border-neutral-200">
+        <div className="relative aspect-square h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-lg bg-neutral-100 border border-neutral-200">
           <Image
             src={
               product.images[0] ||
@@ -50,7 +50,7 @@ export function MyListingCard({
           />
           {isSold && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <span className="text-[9px] font-black uppercase text-white tracking-wider">
+              <span className="text-[9px] font-bold uppercase text-white tracking-wider">
                 Sold
               </span>
             </div>
@@ -72,7 +72,7 @@ export function MyListingCard({
             ) : product.status === "Reserved" ? (
               <Badge variant="reserved">Reserved</Badge>
             ) : (
-              <Badge variant="available">Active / Available</Badge>
+              <Badge variant="available">Active</Badge>
             )}
           </div>
 
@@ -85,7 +85,7 @@ export function MyListingCard({
 
           <div className="mt-1 flex items-baseline gap-2">
             <span
-              className={`text-base font-black ${
+              className={`text-base font-bold ${
                 product.listingType === "Free"
                   ? "text-emerald-600"
                   : "text-neutral-900"
@@ -119,7 +119,7 @@ export function MyListingCard({
             type="button"
             variant="ghost"
             size="sm"
-            className="rounded-xl h-9 text-xs font-semibold gap-1 text-neutral-600 hover:text-neutral-900"
+            className="rounded-lg h-8 text-xs font-medium gap-1 text-neutral-600 hover:text-neutral-900"
             title="View Product Page"
           >
             <ExternalLink className="h-3.5 w-3.5" />
@@ -133,7 +133,7 @@ export function MyListingCard({
           variant="outline"
           size="sm"
           onClick={() => onToggleSold(product)}
-          className={`rounded-xl h-9 text-xs font-semibold gap-1.5 transition-colors ${
+          className={`rounded-lg h-8 text-xs font-medium gap-1.5 transition-colors ${
             isSold
               ? "border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
               : "border-neutral-300 text-neutral-700 hover:border-neutral-400"
@@ -159,7 +159,7 @@ export function MyListingCard({
           variant="outline"
           size="sm"
           onClick={() => onEdit(product)}
-          className="rounded-xl h-9 text-xs font-semibold gap-1.5 border-neutral-300 text-neutral-700 hover:border-[#ff4000] hover:text-[#ff4000]"
+          className="rounded-lg h-8 text-xs font-medium gap-1.5 border-neutral-300 text-neutral-700 hover:border-neutral-400"
           title="Edit Listing Details"
         >
           <Edit2 className="h-3.5 w-3.5" />
@@ -172,13 +172,12 @@ export function MyListingCard({
           variant="ghost"
           size="sm"
           onClick={() => onDelete(product)}
-          className="rounded-xl h-9 text-xs font-semibold text-rose-500 hover:bg-rose-50 hover:text-rose-600 px-2.5"
+          className="rounded-lg h-8 text-xs font-medium text-rose-500 hover:bg-rose-50 hover:text-rose-600 px-2"
           title="Delete Listing"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3.5 w-3.5" />
         </Button>
       </div>
     </div>
   );
 }
-

@@ -159,12 +159,12 @@ export default function DashboardOffers() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center">
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-8 text-center">
           <AlertCircle className="mx-auto h-8 w-8 text-rose-500 mb-2" />
           <p className="text-sm text-neutral-700">{error}</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-neutral-200 bg-white p-10 text-center">
+        <div className="rounded-lg border border-neutral-200 bg-white p-10 text-center">
           <Tag className="mx-auto h-10 w-10 text-neutral-300 mb-3" />
           <h3 className="font-bold text-neutral-900">No offers found</h3>
           <p className="text-sm text-neutral-500 mt-1">
@@ -184,11 +184,11 @@ export default function DashboardOffers() {
             const discount = prod && prod.price > 0 ? Math.round(((prod.price - offer.offeredPrice) / prod.price) * 100) : 0;
 
             return (
-              <div key={oId} className="rounded-2xl border border-neutral-200/80 bg-white p-4 transition-all hover:shadow-sm">
+              <div key={oId} className="rounded-lg border border-neutral-200 bg-white p-3.5 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* Buyer */}
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#fff2ee] text-[#ff4000] font-bold shrink-0">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fff2ee] text-[#ff4000] font-bold shrink-0 text-xs">
                       {offer.buyerName.charAt(0)}
                     </div>
                     <div className="min-w-0">
